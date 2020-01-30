@@ -33,7 +33,7 @@ func TestKnativeServingGroupVersionKind(t *testing.T) {
 	}
 }
 
-func TestAssumeDepsInstalled(t *testing.T) {
+func TestMarkInstallSucceeded(t *testing.T) {
 	ks := &KnativeServingStatus{}
 	ks.InitializeConditions()
 	assertEqual(t, ks.GetCondition(DependenciesInstalled).IsUnknown(), true)
@@ -43,6 +43,18 @@ func TestAssumeDepsInstalled(t *testing.T) {
 	assertEqual(t, ks.GetCondition(DependenciesInstalled).IsTrue(), true)
 	assertEqual(t, ks.IsInstalled(), true)
 	assertEqual(t, ks.IsFullySupported(), true)
+}
+
+func TestMarkInstallFailed(t *testing.T) {
+	ks := &KnativeServingStatus{}
+	ks.InitializeConditions()
+	assertEqual(t, ks.GetCondition(InstallSucceeded).IsUnknown(), true)
+	assertEqual(t, ks.GetCondition(InstallSucceeded).IsTrue(), false)
+	ks.MarkInstallFailed("you are unsupported")
+	assertEqual(t, ks.GetCondition(InstallSucceeded).IsTrue(), false)
+	assertEqual(t, ks.GetCondition(InstallSucceeded).Reason, "Error")
+	assertEqual(t, ks.GetCondition(InstallSucceeded).Message,
+		"Install failed with message: you are unsupported")
 }
 
 func assertEqual(t *testing.T, actual, expected interface{}) {
