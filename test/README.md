@@ -21,5 +21,5 @@ kubectl create namespace operator-tests
 To run all integration tests:
 
 ```bash
-go test -v -tags=e2e -count=1 ./test/e2e
+PROJECT_ID=$YOUR_PROJECT ./test/e2e-tests.sh
 ```
